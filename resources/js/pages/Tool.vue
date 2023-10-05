@@ -30,7 +30,7 @@
         <code
           class="ml-1 border border-gray-100 dark:border-gray-900 text-sm font-mono text-white bg-black rounded px-2 py-1"
         >
-          /nova-components/HtmlbuilderNewsletter/resources/js/pages/Tool.vue
+          /HtmlbuilderNewsletter/resources/js/pages/Tool.vue
         </code>
       </p>
     </Card>
