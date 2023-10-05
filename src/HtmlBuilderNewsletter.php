@@ -26,11 +26,12 @@ class HtmlBuilderNewsletter extends Tool
      * @param  \Illuminate\Http\Request $request
      * @return mixed
      */
-    /*public function menu(Request $request)
+    public function menu(Request $request)
     {
-        return MenuSection::make('Htmlbuilder Newsletter')
+        /*return MenuSection::make('Htmlbuilder Newsletter')
             ->path('/htmlbuildernewsletter')
-            ->icon('server');
-    }*/
+            ->icon('server');*/
+
+    }
     
 }
