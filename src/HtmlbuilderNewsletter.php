@@ -1,13 +1,13 @@
 <?php
 
-namespace Glacom\HtmlbuilderNewsletter;
+namespace Glacom\HtmlBuilderNewsletter;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Menu\MenuSection;
 use Laravel\Nova\Nova;
 use Laravel\Nova\Tool;
 
-class HtmlbuilderNewsletter extends Tool
+class HtmlBuilderNewsletter extends Tool
 {
     /**
      * Perform any tasks that need to happen when the tool is booted.
@@ -16,8 +16,8 @@ class HtmlbuilderNewsletter extends Tool
      */
     public function boot()
     {
-        Nova::script('htmlbuilder-newsletter', __DIR__.'/../dist/js/tool.js');
-        Nova::style('htmlbuilder-newsletter', __DIR__.'/../dist/css/tool.css');
+        Nova::script('HtmlBuilderNewsletter', __DIR__.'/../dist/js/tool.js');
+        Nova::style('HtmlBuilderNewsletter', __DIR__.'/../dist/css/tool.css');
     }
 
     /**
@@ -29,7 +29,7 @@ class HtmlbuilderNewsletter extends Tool
     /*public function menu(Request $request)
     {
         return MenuSection::make('Htmlbuilder Newsletter')
-            ->path('/htmlbuilder-newsletter')
+            ->path('/htmlbuildernewsletter')
             ->icon('server');
     }*/
     
