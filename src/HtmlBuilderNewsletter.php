@@ -31,7 +31,6 @@ class HtmlBuilderNewsletter extends Tool
         /*return MenuSection::make('Htmlbuilder Newsletter')
             ->path('/htmlbuildernewsletter')
             ->icon('server');*/
-
     }
     
 }

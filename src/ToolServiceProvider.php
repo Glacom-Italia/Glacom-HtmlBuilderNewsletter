@@ -24,9 +24,13 @@ class ToolServiceProvider extends ServiceProvider
             $this->routes();
         });
 
-        Nova::serving(function (ServingNova $event) {
-            //
-        });
+        /*Nova::serving(function (ServingNova $event) {
+            Nova::provideToScript([
+                'toolData' => [
+                    'config' => config('app'),
+                ]
+            ]);
+        });*/
     }
 
     /**
@@ -43,8 +47,9 @@ class ToolServiceProvider extends ServiceProvider
         Nova::router(['nova', Authenticate::class, Authorize::class], 'htmlbuildernewsletter')
             ->group(__DIR__.'/../routes/inertia.php');
 
-        Route::middleware(['nova', Authorize::class])
-            ->prefix('nova-vendor/htmlbuildernewsletter')
+        //middleware(['nova', Authorize::class])
+
+        Route::prefix('nova-vendor/htmlbuildernewsletter')
             ->group(__DIR__.'/../routes/api.php');
     }
 
