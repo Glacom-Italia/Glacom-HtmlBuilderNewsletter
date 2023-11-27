@@ -20,25 +20,6 @@
         </code>
       </p>
     </Card-->
-    <!--<Card class="mb-6 flex flex-col items-center justify-center" style="min-height: 300px">
-      <div class="row">
-        <div class="col-3">
-          Seleziona il modulo: 
-        </div> 
-        <div class="col-9">
-          <select @change="loadModuleFilter" name="module2" id="module2">
-            <template v-for="(modName, modCode) in configs.active_modules">
-              <option value="{{ modCode }}">{{ modName }}</option>
-            </template>
-          </select>
-        </div>  
-      </div>
-      <button @click="loadModuleFilter" class="btn btn-default btn-primary">Test api call 'load-module-filter'</button>
-      <br><br>
-      <button @click="loadModuleData" class="btn btn-default btn-primary">Test api call 'load-module-data'</button>
-      <br><br>
-      <button @click="loadTemplate" class="btn btn-default btn-primary">Test api call 'load-template'</button>
-    </Card>-->
 
     <form name="formFilter">
     <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow divide-y divide-gray-100 dark:divide-gray-700 w-full">
