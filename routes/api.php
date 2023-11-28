@@ -43,7 +43,7 @@ Route::post('/load-module-filter', function (Request $request) {
 });
 
 Route::post('/load-module-data', function (Request $request) {
-    DB::enableQueryLog();
+    //DB::enableQueryLog();
     //$start = microtime(true);
     //echo 'start > '.$start.' | ';
 
@@ -65,10 +65,10 @@ Route::post('/load-module-data', function (Request $request) {
     $data = array();
     if($request->module == 'magazine'){
         
-        $magazineNews = MagazineNews::with(['magazineGroup', 'magazineTag'])
-            ->where('is_active', '1')
+        $magazineNews = MagazineNews::where('is_active', '1')
             ->where('status', '3')
             ->where('publish_datetime', '<=', DB::raw('now()'));
+            //with(['magazineGroup', 'magazineTag'])
 
         if(!empty($reqTmpGroup) && count($reqTmpGroup)>0){
             $magazineNews->whereHas('magazineGroup', function(Builder $query) use( $reqTmpGroup ){
@@ -94,6 +94,8 @@ Route::post('/load-module-data', function (Request $request) {
 
     }elseif($request->module == 'event'){
         $eventController = new EventController;
+        if(!$request->dt_from) $request->dt_from = date('Y-m-d');
+        if(!$request->dt_to) $request->dt_to = null;
         $data = $eventController->findEventItemByDate($request->dt_from, $request->dt_to, false, $reqTmpGroup);
     }
     //dd(DB::getQueryLog());
@@ -121,6 +123,8 @@ Route::post('/load-module-data', function (Request $request) {
 });
 
 Route::post('/load-template', function (Request $request) {
+    //$start = microtime(true);
+    //echo 'start > '.$start.' | ';
 
     $reqTmpData = $request->datas;
     if(is_string($reqTmpData) && trim($reqTmpData) != ''){
@@ -137,33 +141,40 @@ Route::post('/load-template', function (Request $request) {
     //dd('pre select');
     // recupera i dati selezionati dall'utente
     if($request->module == 'magazine'){
-        $outData = MagazineNews::with(['magazineGroup'])
-            ->where('is_active', '1')
+        $outData = MagazineNews::where('is_active', '1')
             ->where('status', '3')
             ->where('publish_datetime', '<=', DB::raw('now()'))
             ->whereIn('id', $reqTmpData)
             ->get();
+            //with(['magazineGroup'])
 
     }elseif($request->module == 'event'){
         $outData = EventItem::where('is_active', '1')
             ->whereIn('id', $reqTmpData)
             ->get();
     }
-
+    //$end1 = microtime(true);
+    //echo 'dopo query >  '.$end1 - $start.' | ';
     //dd('pre props');
 
-    $props = [
-        'config' => config('app'),
-        'homePage' => $homePage->toArray(), 
-        'locale' => $request->lang,
-        'data' => $outData->toArray(),
-    ];
+    $outData2 = $outData->toArray();
+    //$end4 = microtime(true);
+    //echo 'dopo toarray >  '.$end4 - $start.' | ';
 
+    $props = [
+        "config" => config('app'),
+        "homePage" => $homePage->toArray(), 
+        "locale" => $request->lang,
+        "data" => $outData2,
+    ];
+    //$end2 = microtime(true);
+    //echo 'dopo props >  '.$end2 - $start.' | ';
     //dd(var_dump($props));
-    $view = View::make('newsletter.'.$request->template, $props);    
-    dd($view->render());
+    $view = View::make('newsletter.'.$request->template, $props);
+    //$end3 = microtime(true);
+    //echo 'dopo view >  '.$end3 - $start.' | ';
+    //dd($view->render());
     return $view->render();
-    //return $props;
 });
 
 Route::post('/', function (Request $request) {

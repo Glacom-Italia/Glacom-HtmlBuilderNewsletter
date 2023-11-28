@@ -51,12 +51,10 @@
             </div>
             <div class="py-6 px-8 w-full">
               <div class="flex items-center">
-                <!--<select id="group" dusk="group" v-model.trim="dataForm.group" class="w-full block form-control form-select form-select-bordered">
-                  <template v-for="group in groups">
-                    <option :value='group.id'>{{ group.name }}</option>
-                  </template>
-                </select>-->
-                <VueMultiselect id="group" name="group" @select="optionGroupSelected" @remove="optionGroupRemove" v-model="groups_selected" :options="groups_options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Seleziona..." label="name" track-by="id" />
+                <select id="group" dusk="group" v-model.trim="dataForm.group" class="w-full block form-control form-select form-select-bordered">
+                  <option v-for="group in groups_options" :value='group.id'>{{ group.name }}</option>
+                </select>
+                <!--VueMultiselect id="group" name="group" @select="optionGroupSelected" @remove="optionGroupRemove" v-model="groups_selected" :options="groups_options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Seleziona..." label="name" track-by="id" /-->
               </div>
             </div>
           </div>
@@ -68,12 +66,10 @@
             </div>
             <div class="py-6 px-8 w-full">
               <div class="flex items-center">
-                <!--<select id="tag" dusk="tag" v-model.trim="dataForm.tag" class="w-full block form-control form-select form-select-bordered">
-                  <template v-for="tag in tags">
-                    <option :value='tag.id'>{{ tag.name }}</option>
-                  </template>
-                </select>-->
-                <VueMultiselect id="tag" name="tag" @select="optionTagSelected" @remove="optionTagRemove" v-model="tags_selected" :options="tags_options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Seleziona..." label="name" track-by="id" />
+                <select id="tag" dusk="tag" v-model.trim="dataForm.tag" class="w-full block form-control form-select form-select-bordered">
+                  <option v-for="tag in tags_options" :value='tag.id'>{{ tag.name }}</option>
+                </select>
+                <!--VueMultiselect id="tag" name="tag" @select="optionTagSelected" @remove="optionTagRemove" v-model="tags_selected" :options="tags_options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Seleziona..." label="name" track-by="id" /-->
               </div>
             </div>
           </div>
@@ -131,12 +127,10 @@
             </div>
             <div class="py-6 px-8 w-full">
               <div class="flex items-center">
-                <!--<select id="group" dusk="group" v-model.trim="dataForm.group" class="w-full block form-control form-select form-select-bordered">
-                  <template v-for="group in groups">
-                    <option :value='group.id'>{{ group.name }}</option>
-                  </template>
-                </select>-->
-                <VueMultiselect id="datas" name="datas" @select="optionDatasSelected" @remove="optionDatasRemove" v-model="datas_selected" :options="datas_options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Seleziona..." label="name" track-by="id" />
+                <select id="group" dusk="group" v-model.trim="dataForm.datasList" class="w-full block form-control form-select form-select-bordered">
+                  <option v-for="datas in datas_options" :value='datas.id'>{{ datas.name }}</option>
+                </select>
+                <!--VueMultiselect id="datas" name="datas" @select="optionDatasSelected" @remove="optionDatasRemove" v-model="datas_selected" :options="datas_options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Seleziona..." label="name" track-by="id" /-->
               </div>
             </div>
           </div>
@@ -192,7 +186,7 @@
           </div>
         </div>
       </div>  
-      <div class="w-full hidden" id="template_data">
+      <div class="w-full" id="template_data">
         <div class="w-8/12 inline-block">
           <div class="flex flex-col">
             <div v-html="templateOut"></div>
@@ -200,7 +194,7 @@
         </div>
         <div class="w-4/12 inline-block">
           <div class="flex flex-col">
-            <textarea id="templateOutSource" name="templateOutSource" ref="templateOutSource">{{ templateOut }}</textarea>
+            <textarea v-html="templateOutSource" id="templateOutSource" name="templateOutSource" ref="templateOutSource"></textarea>
             <br><br>
             <button @click="copyText()">Click to Copy</button>
           </div>
@@ -236,15 +230,21 @@
   </div>
 </template>
 
+
+<!--style src="vue-multiselect/dist/vue-multiselect.min.css"></style-->
+<style>
+/* Scoped Styles */
+</style>
+
 <script>
-import axios from 'axios';
-import VueMultiselect from 'vue-multiselect'
+//import axios from 'axios';
+//import VueMultiselect from 'vue-multiselect'
 
 export default {
-  components: { VueMultiselect },
+  //components: { VueMultiselect },
   data() {
     return {
-      configs: null,
+      configs: [],
       groups_selected: null,
       groups_options: [],
       tags_selected: null,
@@ -253,6 +253,7 @@ export default {
       datas_selected: null,
       datas_options: [],
       templateOut: null,
+      templateOutSource: null,
       dataForm: {
         module: '',
         group: [],
@@ -270,7 +271,8 @@ export default {
   },
   methods: {
     getConfig(){
-      axios.get('/nova-vendor/htmlbuildernewsletter/app-config')
+      //axios.get('/nova-vendor/htmlbuildernewsletter/app-config')
+      Nova.request().get('/nova-vendor/htmlbuildernewsletter/app-config')
         .then(response => {
         //console.log(response.data)
         this.configs = response.data;
@@ -286,7 +288,8 @@ export default {
       document.getElementById("list_tags").classList.add("hidden");
       document.getElementById("module_filter_error").classList.add("hidden");
 
-      axios.post('/nova-vendor/htmlbuildernewsletter/load-module-filter', data)
+      //axios.post('/nova-vendor/htmlbuildernewsletter/load-module-filter', data)
+      Nova.request().post('/nova-vendor/htmlbuildernewsletter/load-module-filter', data)
         .then(response => {
           if(this.dataForm.module == 'magazine'){
             if(response.data.group.length > 0){
@@ -344,7 +347,8 @@ export default {
       document.getElementById("module_data").classList.add("hidden");
       document.getElementById("module_data_loading").classList.remove("hidden");
       
-      axios.post('/nova-vendor/htmlbuildernewsletter/load-module-data', data)
+      //axios.post('/nova-vendor/htmlbuildernewsletter/load-module-data', data)
+      Nova.request().post('/nova-vendor/htmlbuildernewsletter/load-module-data', data)
         .then(response => {
           document.getElementById("module_data_loading").classList.add("hidden");
 
@@ -359,7 +363,7 @@ export default {
           }
 
           document.getElementById("module_data").classList.remove("hidden");
-          console.log(response)
+          //console.log(response)
         });
     },
     optionDatasSelected(option, idCur){
@@ -370,6 +374,7 @@ export default {
       this.dataForm.datasList.splice(index, 1);
     },
     loadTemplate(){
+      var _this5 = this;
       const data = new FormData();
       data.append('module', this.dataForm.module);
       data.append('template', this.dataForm.template);
@@ -379,10 +384,12 @@ export default {
       document.getElementById("template_data").classList.add("hidden");
       document.getElementById("template_loading").classList.remove("hidden");
 
-      axios.post('/nova-vendor/htmlbuildernewsletter/load-template', data)
+      //axios.post('/nova-vendor/htmlbuildernewsletter/load-template', data)
+      Nova.request().post('/nova-vendor/htmlbuildernewsletter/load-template', data)
         .then(function (response){
-          console.log(response);
-          this.templateOutSource = response.data;
+          //console.log(response);
+          _this5.templateOutSource = response.data;
+          _this5.templateOut = response.data;
 
           document.getElementById("template_data").classList.remove("hidden");
           document.getElementById("template_loading").classList.add("hidden");
@@ -397,8 +404,3 @@ export default {
   }
 }
 </script>
-
-<style src="vue-multiselect/dist/vue-multiselect.css"></style>
-<style>
-/* Scoped Styles */
-</style>
